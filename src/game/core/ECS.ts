@@ -131,10 +131,14 @@ export class ECSManager {
   /**
    * 根据组件类型查询实体
    */
-  queryEntities(...componentClasses: (new () => Component)[]): Entity[] {
+  queryEntities(...componentClasses: (new (...args: any[]) => Component)[]): Entity[] {
     return Array.from(this.entities.values()).filter(entity =>
       entity.enabled &&
-      componentClasses.every(componentClass => entity.hasComponent(componentClass))
+      componentClasses.every(componentClass => {
+        // 通过组件名称来检查，而不是构造函数
+        const componentName = componentClass.name
+        return entity.components.has(componentName)
+      })
     )
   }
 
