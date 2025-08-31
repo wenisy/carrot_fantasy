@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>萝卜幻想 - 测试版</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+  <script>
+    // 简化的测试游戏
+    class TestScene extends Phaser.Scene {
+      constructor() {
+        super({ key: 'TestScene' })
+      }
+
+      create() {
+        const { width, height } = this.scale
+
+        // 创建背景
+        this.add.rectangle(width / 2, height / 2, width, height, 0x2c3e50)
+
+        // 添加标题
+        const title = this.add.text(width / 2, 50, '萝卜幻想 - 测试版', {
+          fontSize: '32px',
+          color: '#ffffff'
+        })
+        title.setOrigin(0.5)
+
+        // 创建简单的地图网格
+        this.createSimpleMap()
+
+        // 添加UI元素
+        this.createUI()
+      }
+
+      createSimpleMap() {
+        const { width, height } = this.scale
+        const tileSize = 32
+        const mapWidth = Math.floor(width / tileSize)
+        const mapHeight = Math.floor((height - 200) / tileSize)
+        const startX = (width - mapWidth * tileSize) / 2
+        const startY = 100
+
+        // 绘制网格
+        for (let y = 0; y < mapHeight; y++) {
+          for (let x = 0; x < mapWidth; x++) {
+            const worldX = startX + x * tileSize + tileSize / 2
+            const worldY = startY + y * tileSize + tileSize / 2
+
+            // 创建路径（中间一行）
+            const isPath = y === Math.floor(mapHeight / 2)
+            const color = isPath ? 0x8b4513 : 0x27ae60
+
+            const tile = this.add.rectangle(worldX, worldY, tileSize - 2, tileSize - 2, color)
+            tile.setStrokeStyle(1, 0x000000, 0.3)
+          }
+        }
+
+        // 绘制路径线
+        const pathY = startY + Math.floor(mapHeight / 2) * tileSize + tileSize / 2
+        const graphics = this.add.graphics()
+        graphics.lineStyle(4, 0xffd700, 1)
+        graphics.beginPath()
+        graphics.moveTo(startX, pathY)
+        graphics.lineTo(startX + mapWidth * tileSize, pathY)
+        graphics.strokePath()
+
+        // 添加起点和终点标记
+        this.add.circle(startX + tileSize / 2, pathY, 8, 0x00ff00) // 起点
+        this.add.circle(startX + mapWidth * tileSize - tileSize / 2, pathY, 8, 0xff0000) // 终点
+      }
+
+      createUI() {
+        const { width, height } = this.scale
+
+        // 顶部状态栏
+        const statusBg = this.add.rectangle(width / 2, 25, width - 20, 40, 0x34495e, 0.8)
+        statusBg.setStrokeStyle(2, 0x7f8c8d)
+
+        // 金币
+        this.add.text(20, 15, '💰 100', { fontSize: '16px', color: '#f1c40f' })
+
+        // 生命
+        this.add.text(120, 15, '❤️ 20', { fontSize: '16px', color: '#e74c3c' })
+
+        // 波次
+        this.add.text(220, 15, '波次: 1', { fontSize: '16px', color: '#3498db' })
+
+        // 底部建塔面板
+        const panelBg = this.add.rectangle(width / 2, height - 60, width - 40, 100, 0x2c3e50, 0.9)
+        panelBg.setStrokeStyle(2, 0x34495e)
+
+        // 塔按钮
+        const towers = [
+          { name: '单体塔', icon: '🏹', cost: 50 },
+          { name: '溅射塔', icon: '💣', cost: 75 },
+          { name: '减速塔', icon: '❄️', cost: 60 },
+          { name: '激光塔', icon: '⚡', cost: 100 }
+        ]
+
+        const buttonWidth = 80
+        const startX = (width - (towers.length * buttonWidth)) / 2 + buttonWidth / 2
+
+        towers.forEach((tower, index) => {
+          const x = startX + index * buttonWidth
+          const y = height - 60
+
+          // 塔按钮
+          const button = this.add.circle(x, y, 25, 0x34495e)
+          button.setStrokeStyle(2, 0x7f8c8d)
+          button.setInteractive()
+
+          // 塔图标
+          this.add.text(x, y - 15, tower.icon, { fontSize: '20px' }).setOrigin(0.5)
+
+          // 塔名称
+          this.add.text(x, y + 5, tower.name, { fontSize: '10px', color: '#ecf0f1' }).setOrigin(0.5)
+
+          // 塔价格
+          this.add.text(x, y + 18, `${tower.cost}`, { fontSize: '10px', color: '#f1c40f' }).setOrigin(0.5)
+
+          // 按钮交互
+          button.on('pointerover', () => button.setFillStyle(0x7f8c8d))
+          button.on('pointerout', () => button.setFillStyle(0x34495e))
+          button.on('pointerdown', () => {
+            console.log(`选择了 ${tower.name}`)
+          })
+        })
+
+        // 控制按钮
+        const pauseBtn = this.add.text(width - 50, 15, '⏸️', {
+          fontSize: '20px',
+          backgroundColor: '#e74c3c',
+          padding: { x: 8, y: 4 }
+        }).setOrigin(0.5).setInteractive()
+
+        pauseBtn.on('pointerdown', () => {
+          console.log('暂停/继续')
+        })
+      }
+    }
+
+    // 游戏配置
+    const config = {
+      type: Phaser.AUTO,
+      width: 800,
+      height: 600,
+      parent: 'game-container',
+      backgroundColor: '#2c3e50',
+      scene: TestScene,
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      }
+    }
+
+    // 启动游戏
+    new Phaser.Game(config)
+  </script>
+</body>
+</html>

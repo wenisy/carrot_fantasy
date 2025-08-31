@@ -49,6 +49,11 @@ export class GameScene extends Phaser.Scene {
 
     // 设置输入
     this.setupInput()
+
+    // 添加调试信息
+    console.log('GameScene created successfully')
+    console.log('Screen size:', width, height)
+    console.log('ECS Manager entities:', this.ecsManager.getEntityCount())
   }
 
 
@@ -80,7 +85,12 @@ export class GameScene extends Phaser.Scene {
     this.ecsManager.addSystem(movementSystem)
     this.ecsManager.addSystem(pathfindingSystem)
 
-    // console.log('Map created with waypoints:', waypoints)
+    console.log('Map created with waypoints:', waypoints)
+    console.log('Map entity ID:', mapEntity.id)
+    console.log('Map component:', mapComponent)
+
+    // 立即触发一次更新以确保地图渲染
+    this.ecsManager.update(0)
   }
 
   private setupInput() {

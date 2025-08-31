@@ -24,15 +24,15 @@ export class Entity {
     return component
   }
 
-  getComponent<T extends Component>(componentClass: new () => T): T | undefined {
+  getComponent<T extends Component>(componentClass: new (...args: any[]) => T): T | undefined {
     return this.components.get(componentClass.name) as T
   }
 
-  removeComponent(componentClass: new () => Component): boolean {
+  removeComponent(componentClass: new (...args: any[]) => Component): boolean {
     return this.components.delete(componentClass.name)
   }
 
-  hasComponent(componentClass: new () => Component): boolean {
+  hasComponent(componentClass: new (...args: any[]) => Component): boolean {
     return this.components.has(componentClass.name)
   }
 
@@ -57,7 +57,7 @@ export class ECSManager {
   private systems: System[] = []
   private nextEntityId: number = 0
 
-  private constructor() {}
+  private constructor() { }
 
   // Allow creating new instances for testing
   static createForTesting(): ECSManager {
