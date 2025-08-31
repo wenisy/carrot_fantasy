@@ -70,6 +70,7 @@ export const TOWER_CONFIGS: { [key: string]: TowerConfig } = {
     attackRate: 2.0,
     range: 150,
     cost: 90,
+    projectileSpeed: 1000, // 激光速度非常快
     upgradePath: [
       { level: 2, cost: 50, damageBonus: 5, attackRateBonus: 0.3, rangeBonus: 15 },
       { level: 3, cost: 80, damageBonus: 8, attackRateBonus: 0.5, rangeBonus: 20 },

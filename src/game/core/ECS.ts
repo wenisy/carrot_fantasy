@@ -59,6 +59,11 @@ export class ECSManager {
 
   private constructor() {}
 
+  // Allow creating new instances for testing
+  static createForTesting(): ECSManager {
+    return new ECSManager()
+  }
+
   static getInstance(): ECSManager {
     if (!ECSManager.instance) {
       ECSManager.instance = new ECSManager()
