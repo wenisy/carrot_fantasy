@@ -38,6 +38,8 @@ export class MonsterComponent extends Component {
   config: MonsterConfig
   pathIndex: number = 0
   distanceTraveled: number = 0
+  targetWaypoint: { x: number; y: number } | null = null
+  targetWaypointIndex: number = -1
 
   constructor(config: MonsterConfig) {
     super()
@@ -139,10 +141,19 @@ export class MonsterComponent extends Component {
   }
 
   /**
+   * 获取当前移动速度
+   */
+  getCurrentSpeed(): number {
+    return this.config.moveSpeed
+  }
+
+  /**
    * 重置路径状态
    */
   resetPath(): void {
     this.pathIndex = 0
     this.distanceTraveled = 0
+    this.targetWaypoint = null
+    this.targetWaypointIndex = -1
   }
 }

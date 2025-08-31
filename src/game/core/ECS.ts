@@ -166,6 +166,13 @@ export class ECSManager {
   }
 
   /**
+   * 获取所有实体
+   */
+  getAllEntities(): Entity[] {
+    return Array.from(this.entities.values())
+  }
+
+  /**
    * 获取活跃实体数量
    */
   getActiveEntityCount(): number {
