@@ -4,10 +4,12 @@ import { MapComponent, Waypoint } from '../components/MapComponent'
 import { MapRenderSystem } from '../systems/MapRenderSystem'
 import { MovementSystem } from '../systems/MovementSystem'
 import { PathfindingSystem } from '../systems/PathfindingSystem'
+import { UIManager } from '../../ui/UIManager'
 
 export class GameScene extends Phaser.Scene {
   private ecsManager: ECSManager
   private mapRenderSystem: MapRenderSystem | null = null
+  private uiManager: UIManager | null = null
   private gameState: {
     gold: number
     lives: number
@@ -39,8 +41,8 @@ export class GameScene extends Phaser.Scene {
     // 创建背景
     this.add.rectangle(width / 2, height / 2, width, height, 0x2c3e50)
 
-    // 创建UI
-    this.createHUD()
+    // 初始化UI管理器
+    this.uiManager = new UIManager(this)
 
     // 创建地图区域
     this.createMap()
@@ -49,53 +51,6 @@ export class GameScene extends Phaser.Scene {
     this.setupInput()
   }
 
-  private createHUD() {
-    const { width } = this.scale
-
-    // 金币显示
-    this.add.text(10, 10, `金币: ${this.gameState.gold}`, {
-      fontSize: '18px',
-      color: '#ffffff'
-    })
-
-    // 生命显示
-    this.add.text(10, 40, `生命: ${this.gameState.lives}`, {
-      fontSize: '18px',
-      color: '#ffffff'
-    })
-
-    // 波次显示
-    this.add.text(10, 70, `波次: ${this.gameState.wave}`, {
-      fontSize: '18px',
-      color: '#ffffff'
-    })
-
-    // 控制按钮
-    const pauseButton = this.add.text(width - 100, 10, '暂停', {
-      fontSize: '16px',
-      color: '#ffffff',
-      backgroundColor: '#e74c3c',
-      padding: { x: 10, y: 5 }
-    })
-    pauseButton.setInteractive()
-
-    pauseButton.on('pointerdown', () => {
-      this.togglePause()
-    })
-
-    // 返回菜单按钮
-    const menuButton = this.add.text(width - 100, 50, '菜单', {
-      fontSize: '16px',
-      color: '#ffffff',
-      backgroundColor: '#3498db',
-      padding: { x: 10, y: 5 }
-    })
-    menuButton.setInteractive()
-
-    menuButton.on('pointerdown', () => {
-      this.scene.start('MenuScene')
-    })
-  }
 
   private createMap() {
     // 创建地图实体
