@@ -113,7 +113,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  update(time: number, delta: number) {
+  update() {
     if (this.gameState.paused) return
 
     // TODO: 更新游戏逻辑

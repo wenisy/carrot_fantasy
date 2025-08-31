@@ -81,6 +81,6 @@ export class TimeManager {
     this.timeScale = 1.0
     this.isPaused = false
     this.accumulator = 0
-    this.lastTime = performance.now()
+    this.lastTime = globalThis.performance.now()
   }
 }
