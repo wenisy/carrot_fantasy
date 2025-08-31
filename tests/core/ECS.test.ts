@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { Entity, Component, System, ECSManager } from '../../src/game/core/ECS'
 
 class TestComponent extends Component {
