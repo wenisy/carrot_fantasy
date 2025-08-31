@@ -92,7 +92,6 @@ export class CombatSystem extends System {
    */
   private attackTarget(towerEntity: Entity, tower: TowerComponent, target: Entity): void {
     const towerPos = towerEntity.getComponent(PositionComponent)!
-    const targetPos = target.getComponent(PositionComponent)!
 
     // 创建弹道
     this.createProjectile(tower, towerPos, target)
@@ -116,9 +115,9 @@ export class CombatSystem extends System {
     projectileComp.sourceId = tower.entityId
 
     // 计算方向
-    const targetPos = target.getComponent(PositionComponent)!
-    const dx = targetPos.x - towerPos.x
-    const dy = targetPos.y - towerPos.y
+    const _targetPos = target.getComponent(PositionComponent)!
+    const dx = _targetPos.x - towerPos.x
+    const dy = _targetPos.y - towerPos.y
     const distance = Math.sqrt(dx * dx + dy * dy)
 
     if (distance > 0) {
